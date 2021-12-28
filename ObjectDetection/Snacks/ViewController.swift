@@ -143,7 +143,7 @@ class ViewController: UIViewController {
         for box in self.boundingBoxViews {
           box.addToLayer(self.videoPreview.layer)
         }
-
+          
         // Once everything is set up, we can start capturing live video.
         self.videoCapture.start()
       }
@@ -181,10 +181,41 @@ class ViewController: UIViewController {
 
   func processObservations(for request: VNRequest, error: Error?) {
     //call show function
+      
+      let results=request.results as? [VNRecognizedObjectObservation]
+      if !(results==nil){
+          show(predictions: results!)
+      }
   }
-
   func show(predictions: [VNRecognizedObjectObservation]) {
    //process the results, call show function in BoundingBoxView
+      var i:Int=0
+      let screenSize=UIScreen.main.bounds
+      var tempBoundingViews:[BoundingBoxView]=[BoundingBoxView]()
+      for prediction in predictions {
+          if prediction.confidence>0.6{
+              DispatchQueue.main.sync {
+                  let boundingBox=CGRect(x: prediction.boundingBox.minX*CGFloat(screenSize.width), y: prediction.boundingBox.minY*CGFloat(screenSize.height), width: prediction.boundingBox.width*CGFloat(screenSize.width), height: prediction.boundingBox.height*CGFloat(screenSize.height))
+                  
+                  self.boundingBoxViews[i].show(frame: boundingBox, label: prediction.labels[i].identifier+":"+"\(prediction.confidence)", color: self.colors[prediction.labels[i].identifier]!)
+                  tempBoundingViews.append(self.boundingBoxViews[i])
+                  i=i+1
+              }
+              if i>=10{
+                  break
+              }
+          }
+      }
+      DispatchQueue.main.sync {
+          sleep(1)
+          for view in tempBoundingViews{
+              view.hide()
+          }
+          tempBoundingViews.removeAll()
+      }
+      
+  }
+    
 }
 
 extension ViewController: VideoCaptureDelegate {

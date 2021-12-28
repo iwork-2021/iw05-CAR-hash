@@ -60,7 +60,6 @@ class BoundingBoxView {
     shapeLayer.path = path.cgPath
     shapeLayer.strokeColor = color.cgColor
     shapeLayer.isHidden = false
-
     textLayer.string = label
     textLayer.backgroundColor = color.cgColor
     textLayer.isHidden = false
@@ -75,6 +74,7 @@ class BoundingBoxView {
     let textSize = CGSize(width: textRect.width + 12, height: textRect.height)
     let textOrigin = CGPoint(x: frame.origin.x - 2, y: frame.origin.y - textSize.height)
     textLayer.frame = CGRect(origin: textOrigin, size: textSize)
+      
   }
 
   func hide() {

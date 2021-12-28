@@ -118,7 +118,6 @@ extension VideoCapture: AVCaptureVideoDataOutputSampleBufferDelegate {
     // Because lowering the capture device's FPS looks ugly in the preview,
     // we capture at full speed but only call the delegate at its desired
     // frame rate. If frameInterval is 1, we run at the full frame rate.
-
     seenFrames += 1
     if seenFrames >= frameInterval {
       seenFrames = 0
